@@ -28,6 +28,7 @@
 	<target name="rsync">
 		<exec executable="rsync" passthru="true" checkreturn="true" escape="false">
 			<arg value="-rvzu" />
+			<arg value="--delete" />
 			<arg value="${project.basedir}/" />
 			<arg value="${path}/" />
 			<arg value="--exclude=build.xml" />
