@@ -15,7 +15,9 @@ class EnhancedCollectionsPlugin extends Omeka_Plugin_AbstractPlugin
 	/**
 	 * @var array  All of the hooks used in this plugin
 	 */
-	protected $_hooks = array('install', 'uninstall', 'define_routes');
+	protected $_hooks = array('install', 'uninstall', 'define_routes',
+		'admin_collections_browse_each'
+	);
 
 	/**
 	 * @var array  The filters used in this plugin.
@@ -51,6 +53,21 @@ class EnhancedCollectionsPlugin extends Omeka_Plugin_AbstractPlugin
 
 		$path = dirname(__FILE__).DIRECTORY_SEPARATOR.'routes.ini';
 		$router->addConfig(new Zend_Config_Ini($path, 'routes'));
+	}
+
+	/**
+	 * Add a settings link to the browse screen.
+	 *
+	 * @param array $args  An array holding the current collection object
+	 */
+	public function hookAdminCollectionsBrowseEach($args)
+	{
+		$collection = $args['collection'];
+
+		if (is_allowed($collection, 'edit'))
+		{
+			echo link_to_collection(__("Settings"), array(), 'settings', $collection);
+		}
 	}
 
 }
