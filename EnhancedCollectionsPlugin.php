@@ -8,10 +8,14 @@
 class EnhancedCollectionsPlugin extends Omeka_Plugin_AbstractPlugin
 {
 	/**
+	 * @var string  The current version of the plugin
+	 */
+	protected $version = "0.1.0";
+
+	/**
 	 * @var array  All of the hooks used in this plugin
 	 */
-	protected $_hooks = array('install', 'config', 'config_form', 'uninstall',
-		'define_routes');
+	protected $_hooks = array('install', 'uninstall', 'define_routes');
 
 	/**
 	 * @var array  The filters used in this plugin.
@@ -23,6 +27,7 @@ class EnhancedCollectionsPlugin extends Omeka_Plugin_AbstractPlugin
 	 */
 	public function hookInstall()
 	{
+		var_dump('Creating the collections_enhanced database'); die;
 		$this->_installOptions();
 	}
 
@@ -31,37 +36,21 @@ class EnhancedCollectionsPlugin extends Omeka_Plugin_AbstractPlugin
 	 */
 	public function hookUninstall()
 	{
+		var_dump('Dropping the collections_enhanced database'); die;
 		$this->_uninstallOptions();
 	}
 
 	/**
-	 * Set the options from the Config form.
-	 */
-	public function hookConfig()
-	{
-		foreach (array_keys($this->_options) as $key)
-		{
-			set_option($key, trim($_POST[$key]));
-		}
-	}
-
-	/**
-	 * Displays the configuration form.
-	 */
-	public function hookConfigForm()
-	{
-		require dirname(__FILE__) . DIRECTORY_SEPARATOR . 'views'. DIRECTORY_SEPARATOR . 'config_form.php';
-	}
-
-	/**
-	 * Add some routes to the flow to override the default user actions.
+	 * Add in routes.ini
 	 *
 	 * @param  array $args  The route arguments
-	 * @return [type] [description]
 	 */
 	public function hookDefineRoutes($args)
 	{
+		$router = $args['router'];
 
+		$path = dirname(__FILE__).DIRECTORY_SEPARATOR.'routes.ini';
+		$router->addConfig(new Zend_Config_Ini($path, 'routes'));
 	}
 
 }

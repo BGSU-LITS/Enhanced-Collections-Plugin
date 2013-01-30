@@ -10,6 +10,8 @@ collections.
 * Add themes to collections
 * Modify the number of records shown per collection page
 * Hook into the search functionality to only search the current collection
+* Add a slug for each collection
+* Custom navigation per collection
 
 ------
 
