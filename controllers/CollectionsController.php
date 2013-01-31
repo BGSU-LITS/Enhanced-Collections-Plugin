@@ -13,35 +13,33 @@ class EnhancedCollections_CollectionsController extends CollectionsController
 	public function settingsAction()
 	{
 		$collection = $this->_helper->db->findById();
+		$enhanced = $this->_helper->db->getTable('EnhancedCollection')->find($collection->id);
 
 		if ($this->getRequest()->isPost())
 		{
-			$collection = $this->handleSettingsPost($collection, $this->getRequest()->getPost());
+			$enahnced = $this->handleSettingsPost($enhanced, $this->getRequest()->getPost(), $collection);
 		}
 
 		$this->view->collection = $collection;
 		$this->view->themes = $this->getThemes();
 
-		// Pull this from the DB...
-		$this->view->settings = array(
-			'slug' => "",
-			'per_page' => 10,
-			'theme' => ""
-		);
+		$this->view->settings = $enhanced->toArray();
 	}
 
 	/**
 	 * Saves the posted data to the database.
 	 *
-	 * @param  Collection $collection The collection to update settings on.
-	 * @param  array      $data       The posted data
-	 * @return Collection             The modified collection object
+	 * @param  EnhancedCollection $enhanced   The enhanced collection to update settings on.
+	 * @param  array              $data       The posted data
+	 * @param  Collection         $collection The collection object for messages
+	 * @return EnhancedCollection             The modified collection object
 	 */
-	protected function handleSettingsPost($collection, array $data)
+	protected function handleSettingsPost($enhanced, array $data, $collection)
 	{
-		$collection->setPostData($data);
+		unset($data['submit']);
+		$enhanced->setPostData($data);
 
-		if ($record->save(false))
+		if ($enhanced->save(false))
 		{
 			$message = $this->_getEditSuccessMessage($collection);
 
@@ -50,14 +48,17 @@ class EnhancedCollections_CollectionsController extends CollectionsController
 				$this->_helper->flashMessenger($message, 'success');
 			}
 
-			$this->_redirectAfterEdit($collection);
+			$this->_helper->redirector->gotoRoute(array(
+				'controller' => 'collections',
+				'action' => 'index'
+			), 'default');
 		}
 		else
 		{
-			$this->_helper->flashMessenger($collection->getErrors());
+			$this->_helper->flashMessenger($enhanced->getErrors());
 		}
 
-		return $collection;
+		return $enhanced;
 	}
 
 	/**
