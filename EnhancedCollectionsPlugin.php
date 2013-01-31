@@ -29,7 +29,34 @@ class EnhancedCollectionsPlugin extends Omeka_Plugin_AbstractPlugin
 	 */
 	public function hookInstall()
 	{
-		var_dump('Creating the collections_enhanced database'); die;
+		$db = get_db();
+
+		$sql = "CREATE TABLE IF NOT EXISTS `{$db->prefix}enhanced_collections` (
+			`id` int(10) unsigned NOT NULL,
+			`slug` varchar(255) NOT NULL,
+			`theme` varchar(100) NOT NULL,
+			`per_page` smallint(5) unsigned NOT NULL,
+			PRIMARY KEY (`id`)
+		) ENGINE=InnoDB DEFAULT CHARSET=utf8";
+
+		$db->query($sql);
+
+		$per_page = get_option('per_page_public');
+
+		$records = $db->getTable('Collection')->findAll();
+		foreach ($records as $row)
+		{
+			$collection = new EnhancedCollection;
+			$collection->setArray(array(
+				'id' => $row->id,
+				'slug' => "",
+				'per_page' => $per_page,
+				'theme' => ""
+			));
+
+			$collection->save();
+		}
+
 		$this->_installOptions();
 	}
 
@@ -38,7 +65,9 @@ class EnhancedCollectionsPlugin extends Omeka_Plugin_AbstractPlugin
 	 */
 	public function hookUninstall()
 	{
-		var_dump('Dropping the collections_enhanced database'); die;
+		$db = get_db();
+		$db->query("DROP TABLE IF EXISTS `{$db->prefix}enhanced_collections`");
+
 		$this->_uninstallOptions();
 	}
 
