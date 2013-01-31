@@ -15,7 +15,9 @@ class EnhancedCollectionsPlugin extends Omeka_Plugin_AbstractPlugin
 	/**
 	 * @var array  All of the hooks used in this plugin
 	 */
-	protected $_hooks = array('install', 'uninstall', 'define_routes');
+	protected $_hooks = array('install', 'uninstall', 'define_routes',
+		'admin_collections_browse_each'
+	);
 
 	/**
 	 * @var array  The filters used in this plugin.
