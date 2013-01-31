@@ -112,18 +112,15 @@ class EnhancedCollectionsPlugin extends Omeka_Plugin_AbstractPlugin
 	{
 		if ($this->theme_name === null)
 		{
-			$request = Zend_Controller_Front::getInstance()->getRequest();
-
-			if ($request->getControllerName() === 'collections' && $request->getActionName() === 'show')
+			$id = $this->getCollectionId();
+			if ($id !== null)
 			{
-				$id = $request->getParam('id');
-
 				$db = get_db();
-				$theme = $db->getTable('EnhancedCollection')->find($id)->theme;
+				$collection = $db->getTable('EnhancedCollection')->find($id);
 
-				if ( ! empty($theme))
+				if ( $collection !== null && ! empty($collection->theme))
 				{
-					$this->theme_name = $theme;
+					$this->theme_name = $collection->theme;
 				}
 			}
 
@@ -134,6 +131,49 @@ class EnhancedCollectionsPlugin extends Omeka_Plugin_AbstractPlugin
 		}
 
 		return $this->theme_name;
+	}
+
+	/**
+	 * The id number of the current collection.
+	 *
+	 * @return int|null   The collection id number or null if this isn't a collection page.
+	 */
+	protected function getCollectionId()
+	{
+		$request = Zend_Controller_Front::getInstance()->getRequest();
+		$controller = $request->getControllerName();
+		$action = $request->getActionName();
+		$id = null;
+
+		if ($controller === 'collections' && $action === 'show')
+		{
+			$id = $request->getParam('id');
+		}
+		else if ($controller === 'items')
+		{
+			if ($action === 'browse')
+			{
+				$id = $request->getParam('collection');
+			}
+			else if ($action === 'show')
+			{
+				$id = $this->getCollectionIdFromItem($request->getParam('id'));
+			}
+		}
+
+		return $id;
+	}
+
+	/**
+	 * Find the id of the collection that the given item is apart of.
+	 *
+	 * @param  int $id   The item id
+	 * @return int|null  The collection id or null
+	 */
+	protected function getCollectionIdFromItem($id)
+	{
+		$db = get_db();
+		return $db->getTable('Item')->find($id)->collection_id;
 	}
 
 }
