@@ -15,14 +15,17 @@ class EnhancedCollectionsPlugin extends Omeka_Plugin_AbstractPlugin
 	/**
 	 * @var array  All of the hooks used in this plugin
 	 */
-	protected $_hooks = array('install', 'uninstall', 'define_routes',
-		'admin_collections_browse_each'
-	);
+	protected $_hooks = array('install', 'uninstall', 'define_routes');
 
 	/**
 	 * @var array  The filters used in this plugin.
 	 */
-	protected $_filters = array();
+	protected $_filters = array('public_theme_name');
+
+	/**
+	 * @var string  The name of the theme...
+	 */
+	private $theme_name = null;
 
 	/**
 	 * Installation hook.
@@ -97,6 +100,40 @@ class EnhancedCollectionsPlugin extends Omeka_Plugin_AbstractPlugin
 		{
 			echo link_to_collection(__("Settings"), array(), 'settings', $collection);
 		}
+	}
+
+	/**
+	 * Intercept the name of the public theme.
+	 *
+	 * @param  string $name The name of the current theme
+	 * @return string       The name of the theme
+	 */
+	public function filterPublicThemeName($name)
+	{
+		if ($this->theme_name === null)
+		{
+			$request = Zend_Controller_Front::getInstance()->getRequest();
+
+			if ($request->getControllerName() === 'collections' && $request->getActionName() === 'show')
+			{
+				$id = $request->getParam('id');
+
+				$db = get_db();
+				$theme = $db->getTable('EnhancedCollection')->find($id)->theme;
+
+				if ( ! empty($theme))
+				{
+					$this->theme_name = $theme;
+				}
+			}
+
+			if ($this->theme_name === null)
+			{
+				$this->theme_name = $name;
+			}
+		}
+
+		return $this->theme_name;
 	}
 
 }
