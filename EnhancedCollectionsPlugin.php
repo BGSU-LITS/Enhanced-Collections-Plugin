@@ -197,7 +197,9 @@ class EnhancedCollectionsPlugin extends Omeka_Plugin_AbstractPlugin
 	protected function getCollectionIdFromItem($id)
 	{
 		$db = get_db();
-		return $db->getTable('Item')->find($id)->collection_id;
+		$item = $db->getTable('Item')->find($id);
+
+		return ($item === null) ? null : $item->collection_id;
 	}
 
 }
