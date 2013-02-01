@@ -175,7 +175,7 @@ class EnhancedCollectionsPlugin extends Omeka_Plugin_AbstractPlugin
 		}
 		else if ($controller === 'items')
 		{
-			if ($action === 'browse')
+			if (in_array($action, array('browse', 'tags', 'search')) === true)
 			{
 				$id = $request->getParam('collection');
 			}
