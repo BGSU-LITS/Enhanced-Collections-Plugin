@@ -36,7 +36,7 @@
 			</div>
 		</div>
 
-		<?php fire_plugin_hook('admin_settings_form', array('form' => $form, 'view' => $this)); ?>
+		<?php fire_plugin_hook('admin_settings_form', array('view' => $this)); ?>
 	</section>
 	<section class="three columns omega">
 		<div id="save" class="panel">
