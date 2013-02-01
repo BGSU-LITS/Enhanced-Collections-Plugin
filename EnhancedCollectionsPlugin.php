@@ -22,7 +22,7 @@ class EnhancedCollectionsPlugin extends Omeka_Plugin_AbstractPlugin
 	/**
 	 * @var array  The filters used in this plugin.
 	 */
-	protected $_filters = array('public_theme_name');
+	protected $_filters = array('public_theme_name', 'public_navigation_items');
 
 	/**
 	 * @var string  The name of the theme...
@@ -133,6 +133,28 @@ class EnhancedCollectionsPlugin extends Omeka_Plugin_AbstractPlugin
 		}
 
 		return $this->theme_name;
+	}
+
+	/**
+	 * Check for a collection and append it to the links.
+	 *
+	 * @param  array $links The current links
+	 * @return array        Navigation links
+	 */
+	public function filterPublicNavigationItems($links)
+	{
+		$request = Zend_Controller_Front::getInstance()->getRequest();
+		$id = $request->getParam('collection');
+
+		if ($id !== null)
+		{
+			for ($i = 0, $len = count($links); $i < $len; $i++)
+			{
+				$links[$i]['uri'] = $links[$i]['uri']."?".http_build_query(array('collection' => $id));
+			}
+		}
+
+		return $links;
 	}
 
 	/**
