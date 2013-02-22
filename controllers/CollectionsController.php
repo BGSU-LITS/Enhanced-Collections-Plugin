@@ -17,13 +17,27 @@ class EnhancedCollections_CollectionsController extends CollectionsController
 
 		if ($this->getRequest()->isPost())
 		{
-			$enahnced = $this->handleSettingsPost($enhanced, $this->getRequest()->getPost(), $collection);
+			$enhanced = $this->handleSettingsPost($enhanced, $this->getRequest()->getPost(), $collection);
 		}
 
 		$this->view->collection = $collection;
 		$this->view->themes = $this->getThemes();
 
-		$this->view->settings = $enhanced->toArray();
+		$this->view->settings = $enhanced ? $enhanced->toArray() : $this->getDefaults();
+	}
+
+	/**
+	 * Gets theme defaults.
+	 *
+	 * @return array
+	 */
+	public function getDefaults()
+	{
+		return array(
+			'slug' => "",
+			'per_page' => get_option('per_page_public'),
+			'theme' => ""
+		);
 	}
 
 	/**
