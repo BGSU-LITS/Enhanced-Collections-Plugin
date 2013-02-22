@@ -50,8 +50,14 @@ class EnhancedCollections_CollectionsController extends CollectionsController
 	 */
 	protected function handleSettingsPost($enhanced, array $data, $collection)
 	{
-		unset($data['submit']);
-		$enhanced->setPostData($data);
+		if ($enhanced === null)
+		{
+			$enhanced = $this->prepNew($data);
+		}
+		else
+		{
+			$enhanced->setPostData($data);
+		}
 
 		if ($enhanced->save(false))
 		{
@@ -73,6 +79,22 @@ class EnhancedCollections_CollectionsController extends CollectionsController
 		}
 
 		return $enhanced;
+	}
+
+	/**
+	 * Prepares a new Enhanced object.
+	 *
+	 * @param  array  $data The data to add
+	 * @return EnhancedCollection
+	 */
+	protected function prepNew(array $data)
+	{
+		$data['id'] = $this->_request->getParam('id');
+		unset($data['submit']);
+
+		$obj = new EnhancedCollection;
+		$obj->setArray($data);
+		return $obj;
 	}
 
 	/**
