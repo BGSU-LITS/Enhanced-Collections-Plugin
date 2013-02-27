@@ -1,5 +1,7 @@
 <?php
 
+require 'functions.php';
+
 /**
  * Enhanced Collections Plugin
  *
@@ -123,6 +125,7 @@ class EnhancedCollectionsPlugin extends Omeka_Plugin_AbstractPlugin
 				if ( $collection !== null && ! empty($collection->theme))
 				{
 					$this->theme_name = $collection->theme;
+					$this->loadCommon($this->theme_name);
 				}
 			}
 
@@ -200,6 +203,20 @@ class EnhancedCollectionsPlugin extends Omeka_Plugin_AbstractPlugin
 		$item = $db->getTable('Item')->find($id);
 
 		return ($item === null) ? null : $item->collection_id;
+	}
+
+	/**
+	 * Checks for a common.php file and load it up if it exists.
+	 *
+	 * @param  string $theme The theme name
+	 */
+	private function loadCommon($theme)
+	{
+		$file = PUBLIC_THEME_DIR.'/'.$theme.'/common.php';
+		if (file_exists($file))
+		{
+			include_once $file;
+		}
 	}
 
 }
