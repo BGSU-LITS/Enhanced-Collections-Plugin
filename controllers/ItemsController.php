@@ -21,6 +21,8 @@ class EnhancedCollections_ItemsController extends ItemsController
 		//Retrieve the number from the options table
 		$options = $this->getFrontController()->getParam('bootstrap')->getResource('Options');
 
+		$perPage = (int) $options['per_page_public'];
+
 		if (is_admin_theme())
 		{
 			$perPage = (int) $options['per_page_admin'];
@@ -35,10 +37,6 @@ class EnhancedCollections_ItemsController extends ItemsController
 				{
 					$perPage = $collection->per_page;
 				}
-			}
-			else
-			{
-				$perPage = (int) $options['per_page_public'];
 			}
 		}
 
