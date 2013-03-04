@@ -18,7 +18,7 @@ class EnhancedCollectionsPlugin extends Omeka_Plugin_AbstractPlugin
 	 * @var array  All of the hooks used in this plugin
 	 */
 	protected $_hooks = array('install', 'uninstall', 'define_routes',
-		'admin_collections_browse_each'
+		'admin_collections_browse_each', 'public_footer'
 	);
 
 	/**
@@ -40,9 +40,9 @@ class EnhancedCollectionsPlugin extends Omeka_Plugin_AbstractPlugin
 
 		$sql = "CREATE TABLE IF NOT EXISTS `{$db->prefix}enhanced_collections` (
 			`id` int(10) unsigned NOT NULL,
-			`slug` varchar(255) NOT NULL,
 			`theme` varchar(100) NOT NULL,
 			`per_page` smallint(5) unsigned NOT NULL,
+			`tracking_id` varchar(100) NOT NULL,
 			PRIMARY KEY (`id`)
 		) ENGINE=InnoDB DEFAULT CHARSET=utf8";
 
@@ -56,9 +56,9 @@ class EnhancedCollectionsPlugin extends Omeka_Plugin_AbstractPlugin
 			$collection = new EnhancedCollection;
 			$collection->setArray(array(
 				'id' => $row->id,
-				'slug' => "",
 				'per_page' => $per_page,
-				'theme' => ""
+				'theme' => "",
+				'tracking_id' => ''
 			));
 
 			$collection->save();
@@ -103,6 +103,36 @@ class EnhancedCollectionsPlugin extends Omeka_Plugin_AbstractPlugin
 		if (is_allowed($collection, 'edit'))
 		{
 			echo link_to_collection(__("Settings"), array(), 'settings', $collection);
+		}
+	}
+
+	/**
+	 * Checks for the Google Analytics Tracking Id and adds it if necessary
+	 *
+	 * @param array $args  The hook arguments
+	 */
+	public function hookPublicFooter($args)
+	{
+		if (is_admin_theme())
+		{
+			return;
+		}
+
+		$collection = null;
+		if (isset($args['collection']) AND $args['collection'] !== null)
+		{
+			$collection = get_db()->getTable('EnhancedCollection')->find($args['collection']);
+		}
+
+		if ($collection !== null)
+		{
+			if ( ! empty($collection->tracking_id))
+			{
+				echo $args['view']->partial(
+					'tracking-code.php',
+					array('id' => $collection->tracking_id)
+				);
+			}
 		}
 	}
 

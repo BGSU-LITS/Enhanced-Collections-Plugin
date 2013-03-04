@@ -11,10 +11,10 @@
 	<section class="seven columns alpha">
 		<div class="field">
 			<div class="two columns alpha">
-				<?php echo $this->formLabel('slug', __('Slug')); ?>
+				<?php echo $this->formLabel('theme', __('Theme')); ?>
 			</div>
 			<div class="inputs five columns omega">
-				<?php echo $this->formText('slug', $this->settings['slug']); ?>
+        		<?php echo $this->formSelect('theme', $this->settings['theme'], null, $this->themes); ?>
 			</div>
 		</div>
 
@@ -29,10 +29,10 @@
 
 		<div class="field">
 			<div class="two columns alpha">
-				<?php echo $this->formLabel('theme', __('Theme')); ?>
+				<?php echo $this->formLabel('tracking_id', __('Google Analytics Tracking ID')); ?>
 			</div>
 			<div class="inputs five columns omega">
-        		<?php echo $this->formSelect('theme', $this->settings['theme'], null, $this->themes); ?>
+				<?php echo $this->formText('tracking_id', $this->settings['tracking_id']); ?>
 			</div>
 		</div>
 

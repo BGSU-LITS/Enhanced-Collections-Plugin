@@ -9,9 +9,9 @@
 class EnhancedCollection extends Omeka_Record_AbstractRecord
 {
 	/**
-	 * @var string
+	 * @var string  The name of the theme to display
 	 */
-	public $slug;
+	public $theme;
 
 	/**
 	 * @var int     The number of records to display per page
@@ -19,9 +19,9 @@ class EnhancedCollection extends Omeka_Record_AbstractRecord
 	public $per_page;
 
 	/**
-	 * @var string  The name of the theme to display
+	 * @var string  Google Analytics tracking id
 	 */
-	public $theme;
+	public $tracking_id;
 
 	/**
 	 * Template method for defining record validation rules.
