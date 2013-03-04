@@ -25,6 +25,20 @@ function get_random_featured_collections($num = 1)
 }
 
 /**
+ * Get a passed in number of featured collection.
+ *
+ * @param  int $num  The number of collections to get
+ * @package Omeka\Function\View\Body
+ * @uses Collection::findRandomFeatured()
+ * @return Collection
+ */
+function get_featured_collections($num = 1)
+{
+	$table = new CollectionTable('Collection', get_db());
+	return $table->findFeatured($num);
+}
+
+/**
  * Get random featured items from the collection
  * 
  * @package Omeka\Function\View\Body
